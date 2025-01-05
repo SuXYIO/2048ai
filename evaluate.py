@@ -1,6 +1,6 @@
 from game2048.game import Game
 from game2048.displays import Display
-
+from agentnn import agentnn
 
 def single_run(size, score_to_win, AgentClass, **kwargs):
     game = Game(size, score_to_win)
@@ -8,21 +8,14 @@ def single_run(size, score_to_win, AgentClass, **kwargs):
     agent.play(verbose=True)
     return game.score
 
+def eval_agent(agent, game_size=4, score_to_win=None, test_rounds=4):
+    scoresum = 0
+    for _ in range(test_rounds):
+        score = single_run(game_size, score_to_win, AgentClass=agent)
+        scoresum += score
+    # average score
+    return scoresum / test_rounds
 
 if __name__ == '__main__':
-    GAME_SIZE = 4
-    SCORE_TO_WIN = 2048
-    N_TESTS = 10
-
-    '''====================
-    Use your own agent here.'''
-    from game2048.agents import ExpectiMaxAgent as TestAgent
-    '''===================='''
-
-    scores = []
-    for _ in range(N_TESTS):
-        score = single_run(GAME_SIZE, SCORE_TO_WIN,
-                           AgentClass=TestAgent)
-        scores.append(score)
-
-    print("Average scores: @%s times" % N_TESTS, sum(scores) / len(scores))
+    ROUNDS = 64
+    print('Average score of ', ROUNDS, ': ', eval_agent(agentnn, test_rounds=ROUNDS))
