@@ -1,7 +1,8 @@
+from sys import argv
 import torch as tch
+from network import *
 from game2048.game import Game
 from agentnn import agentnn
-from network import gamenn
 from evotorch.neuroevolution import NEProblem
 from evotorch.algorithms import PGPE
 from evotorch.logging import PandasLogger, StdOutLogger
@@ -9,7 +10,7 @@ import matplotlib.pyplot as plt
 
 class train_agentnn(agentnn):
     def __init__(self, model, game):
-        super().__init__(game, display=None, load_file=False)
+        super().__init__(game, file_path=None, display=None)
         self.model = model
 
 def train_run(model, size, score_to_win, AgentClass):
@@ -27,9 +28,10 @@ def train_eval_agent(model, game_size=4, score_to_win=None, test_rounds=4):
     return scoresum / test_rounds
 
 if __name__ == '__main__':
+    model = tch.load(argv[1])
     problem = NEProblem(
         objective_sense="max",
-        network=gamenn,
+        network=model,
         network_eval_func=train_eval_agent,
     )
     searcher = PGPE(
@@ -41,10 +43,10 @@ if __name__ == '__main__':
     )
     logger_pandas = PandasLogger(searcher)
     logger_stdout = StdOutLogger(searcher, interval=16)
-    TIMES = 256
+    TIMES = int(argv[3])
     searcher.run(TIMES)
     logger_pandas.to_dataframe()['mean_eval'].plot()
     plt.show()
     trained_model = problem.parameterize_net(searcher.status["center"])
-    PATH = './saves/state_dict0.pth'
+    PATH = argv[2]
     tch.save(trained_model, PATH)

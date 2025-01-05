@@ -1,6 +1,6 @@
+from sys import argv
 from game2048.game import Game
 from game2048.displays import Display
-from game2048.agents import RandomAgent
 from agentnn import agentnn
 
 def demo_run(AgentClass, size=4, score_to_win=None, **kwargs):
@@ -10,4 +10,4 @@ def demo_run(AgentClass, size=4, score_to_win=None, **kwargs):
     return game.score
 
 if __name__ == '__main__':
-    demo_run(RandomAgent)
+    demo_run(agentnn, filepath=argv[1])
