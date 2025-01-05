@@ -17,6 +17,7 @@ class Game:
         if score_to_win is None:
             score_to_win = np.inf
         self.score_to_win = score_to_win
+        self._score = 0
         self.__rate_2 = rate_2
         if random:
             self.__board = \
@@ -41,7 +42,8 @@ class Game:
         # treat all direction as left (by rotation)
         board_to_left = np.rot90(self.board, -direction)
         for row in range(self.size):
-            core = _merge(board_to_left[row])
+            core, addscore = _merge(board_to_left[row])
+            self._score += addscore
             board_to_left[row, :len(core)] = core
             board_to_left[row, len(core):] = 0
 
@@ -52,9 +54,8 @@ class Game:
     def __str__(self):
         board = "State:"
         for row in self.board:
-            board += ('\t' + '{:8d}' *
-                      self.size + '\n').format(*map(int, row))
-        board += "Score: {0:d}".format(self.score)
+            board += ('\t' + '{:8d}' * self.size + '\n').format(*map(int, row))
+        board += "Score: {0:d}".format(int(self._score))
         return board
 
     @property
@@ -73,7 +74,7 @@ class Game:
 
     @property
     def score(self):
-        return int(self.board.max())
+        return self._score
 
     @property
     def end(self):
@@ -82,7 +83,7 @@ class Game:
         1: lose
         2: win
         '''
-        if self.score >= self.score_to_win:
+        if self._score >= self.score_to_win:
             return 2
         elif self.__end:
             return 1
@@ -106,17 +107,19 @@ class Game:
 
 
 def _merge(row):
-    '''merge the row, there may be some improvement'''
-    non_zero = row[row != 0]  # remove zeros
-    core = [None]
-    for elem in non_zero:
-        if core[-1] is None:
-            core[-1] = elem
-        elif core[-1] == elem:
-            core[-1] = 2 * elem
-            core.append(None)
+    '''Merge the row and return the merged row and the score gained from merging'''
+    non_zero = row[row != 0]
+    core = []
+    addscore = 0
+    i = 0
+    while i < len(non_zero):
+        if i + 1 < len(non_zero) and non_zero[i] == non_zero[i + 1]:
+            merged_value = non_zero[i] * 2
+            core.append(merged_value)
+            addscore += merged_value
+            i += 2
         else:
-            core.append(elem)
-    if core[-1] is None:
-        core.pop()
-    return core
+            core.append(non_zero[i])
+            i += 1
+    core += [0] * (len(row) - len(core))
+    return core, addscore

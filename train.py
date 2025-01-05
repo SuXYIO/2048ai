@@ -46,5 +46,5 @@ if __name__ == '__main__':
     logger_pandas.to_dataframe()['mean_eval'].plot()
     plt.show()
     trained_model = problem.parameterize_net(searcher.status["center"])
-    PATH = './saves/state_dict0'
+    PATH = './saves/state_dict0.pth'
     tch.save(trained_model, PATH)

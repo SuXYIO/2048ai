@@ -10,7 +10,7 @@ class agentnn(Agent):
         self.game = game
         self.model = gamenn()
         if load_file:
-            PATH = './saves/state_dict0'
+            PATH = './saves/state_dict0.pth'
             self.model = tch.load(PATH)
 
     def step(self):

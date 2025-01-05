@@ -19,4 +19,5 @@ I didn't write much user interface, so feel free to edit code when you want to c
 
 - `train.py` training and saving models
 - `evaluate.py` evaluating and loading models
+- `demo.py` load and see the model in action
 
