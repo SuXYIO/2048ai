@@ -31,7 +31,7 @@ class Game:
         self.enable_rewrite_board = enable_rewrite_board
         assert not self.end
 
-    def move(self, direction):
+    def move(self, direction, train=False):
         '''
         direction:
             0: left
@@ -39,6 +39,8 @@ class Game:
             2: right
             3: up
         '''
+
+        last_board = self.board
         # treat all direction as left (by rotation)
         board_to_left = np.rot90(self.board, -direction)
         for row in range(self.size):
@@ -50,6 +52,11 @@ class Game:
         # rotation to the original
         self.__board = np.rot90(board_to_left, direction)
         self._maybe_new_entry()
+
+        # training
+        if train:
+            if np.array_equal(self.board, last_board):
+                self._score *= 3 / 4
 
     def __str__(self):
         board = "State:"

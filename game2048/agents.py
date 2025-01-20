@@ -8,11 +8,11 @@ class Agent:
         self.game = game
         self.display = display
 
-    def play(self, max_iter=np.inf, verbose=False, interact=False):
+    def play(self, max_iter=np.inf, verbose=False, interact=False, train=False):
         n_iter = 0
         while (n_iter < max_iter) and (not self.game.end):
             direction = self.step()
-            self.game.move(direction)
+            self.game.move(direction, train=train)
             n_iter += 1
             if verbose:
                 print("Iter: {}".format(n_iter), "Direction: {}".format(["left", "down", "right", "up"][direction]))

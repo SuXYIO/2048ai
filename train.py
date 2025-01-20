@@ -16,7 +16,7 @@ class train_agentnn(agentnn):
 def train_run(model, size, score_to_win, AgentClass):
     game = Game(size, score_to_win)
     agent = AgentClass(model, game)
-    agent.play(verbose=False)
+    agent.play(verbose=False, train=True)
     return game.score
 
 def train_eval_agent(model, game_size=4, score_to_win=None, test_rounds=4):
