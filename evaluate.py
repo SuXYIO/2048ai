@@ -9,10 +9,10 @@ def single_run(AgentClass, size=4, score_to_win=None, **kwargs):
     agent.play(verbose=False)
     return game.score
 
-def eval_agent(agent, game_size=4, score_to_win=None, test_rounds=4, **kwargs):
+def eval_agent(agent, score_to_win=None, test_rounds=4, **kwargs):
     scoresum = 0
     for _ in range(test_rounds):
-        score = single_run(agent, size=game_size, score_to_win=score_to_win)
+        score = single_run(agent, score_to_win=score_to_win, **kwargs)
         scoresum += score
     # average score
     return scoresum / test_rounds

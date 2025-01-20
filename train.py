@@ -27,8 +27,8 @@ def train_eval_agent(model, game_size=4, score_to_win=None, test_rounds=4):
     # average score
     return scoresum / test_rounds
 
-if __name__ == '__main__':
-    model = tch.load(argv[1])
+def train(model_path: str, model_save_path: str, times: int):
+    model = tch.load(model_path)
     problem = NEProblem(
         objective_sense="max",
         network=model,
@@ -41,12 +41,20 @@ if __name__ == '__main__':
         center_learning_rate=0.2,
         stdev_learning_rate=0.1,
     )
+
     logger_pandas = PandasLogger(searcher)
-    logger_stdout = StdOutLogger(searcher, interval=16)
-    TIMES = int(argv[3])
-    searcher.run(TIMES)
+    StdOutLogger(searcher, interval=max(1, int(times / 16)))
+    searcher.run(times)
+
+    plt.title(f'training curve of {model_save_path}, {times} generations')
+    plt.xlabel('gen')
+    plt.ylabel('mean_eval')
     logger_pandas.to_dataframe()['mean_eval'].plot()
     plt.show()
-    trained_model = problem.parameterize_net(searcher.status["center"])
-    PATH = argv[2]
+
+    trained_model = problem.parameterize_net(searcher.status['center'])
+    PATH = model_save_path
     tch.save(trained_model, PATH)
+
+if __name__ == '__main__':
+    train(argv[1], argv[2], int(argv[3]))

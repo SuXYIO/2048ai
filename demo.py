@@ -10,4 +10,4 @@ def demo_run(AgentClass, size=4, score_to_win=None, **kwargs):
     return game.score
 
 if __name__ == '__main__':
-    demo_run(agentnn, filepath=argv[1])
+    demo_run(agentnn, file_path=argv[1])
