@@ -46,10 +46,10 @@ def train(model_path: str, model_save_path: str, times: int):
     StdOutLogger(searcher, interval=max(1, int(times / 16)))
     searcher.run(times)
 
+    logger_pandas.to_dataframe()['mean_eval'].plot()
     plt.title(f'training curve of {model_save_path}, {times} generations')
     plt.xlabel('gen')
     plt.ylabel('mean_eval')
-    logger_pandas.to_dataframe()['mean_eval'].plot()
     plt.show()
 
     trained_model = problem.parameterize_net(searcher.status['center'])
